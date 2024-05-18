@@ -8,7 +8,7 @@ struct JumpscareView: View {
     var body: some View {
         VStack {
             ZStack {
-                Image("JumpscareImg")
+                Image("JumpscareBG-Phone")
                     .resizable()
                     .ignoresSafeArea()
                     .scaledToFill()
@@ -30,15 +30,16 @@ struct JumpscareView: View {
     
     func gameOverText() -> some View {
         VStack {
-            Text("Game Over!")
-                .foregroundStyle(Color.white)
-                .font(.title)
-                .bold()
+            Image("gameOver-Phone")
+                .resizable()
+                .frame(maxWidth: 350, maxHeight: 200)
             Button(action: {
-                            presentationMode.wrappedValue.dismiss()
-                        }) {
-                            Text("Back to Main Menu")
-                        }
+                presentationMode.wrappedValue.dismiss()}
+            ) {
+                Text("-Menu-")
+                    .font(.custom("WaitingfortheSunrise", size: 64))
+                    .foregroundStyle(Color.white)
+            }
         }
     }
 }

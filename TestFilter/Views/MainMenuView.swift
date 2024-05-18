@@ -8,32 +8,25 @@ struct MainMenuView: View {
     var body: some View {
         ZStack {
             
-            Image("Background-Phone")
+            Image("HorrorBG-Phone")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
             
             VStack {
                 
-                Image("Title-Phone")
+                Image("Title")
                     .resizable()
-                    .frame(maxWidth: 300, maxHeight: 200)
+                    .frame(maxWidth: 350, maxHeight: 200)
                 
                 Button{
                     isARViewPresented.toggle()
                 } label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-                            .frame(maxWidth: 200, maxHeight: 60)
-                            .foregroundStyle(Color.gray)
-                            
-                        Text("Play Game")
-                            .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                            .bold()
+                        Text("-PLAY-")
+                            .font(.custom("WaitingfortheSunrise", size: 64))
                             .foregroundStyle(Color.white)
-                    }
                 }
-                .padding(.top, 50)
+                .padding(.top, 80)
             }
             .onAppear {
                 audioPlayer.playBgMusic()

@@ -21,6 +21,7 @@ struct MainView: View {
                                     Spacer()
                                     VStack (alignment: .trailing){
                                         Text("Find the items!")
+                                            .font(.custom("WaitingfortheSunrise", size: 24))
                                             .foregroundStyle(Color.white)
                                         HStack {
                                             Image("OrigamiNF_Phone")

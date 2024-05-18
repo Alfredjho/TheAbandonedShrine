@@ -4,6 +4,8 @@ import ARKit
 import CoreImage.CIFilterBuiltins
 
 var isModelLoaded = false
+var audioPlayer = AudioManager()
+var isShrineFound = false
 
 extension ARView: ARCoachingOverlayViewDelegate {
     func addCoaching() {
@@ -18,7 +20,33 @@ extension ARView: ARCoachingOverlayViewDelegate {
     public func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
         isModelLoaded = true
         print("did deactivate")
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+            audioPlayer.playNarration(fileName: "Spawn")
+        }
+        
     }
+}
+
+// ini baru berhasil detect bahwa ada long press di cameraAR, belom bisa detek modelEntity nya
+
+extension ARView {
+    @objc func handleLongPress(_ recognizer: UITapGestureRecognizer? = nil) {
+
+           let touchInView = recognizer?.location(in: self)
+        
+           guard let touchInView = recognizer?.location(in: self) else {
+               return
+           }
+
+           guard let modelEntity = self.entity(at: touchInView) as? ModelEntity else {
+               print("===========================================modelEntity not found at \(touchInView)")
+               return
+           }
+           
+           print("===============================================Long press detected on - \(modelEntity.name)")
+           
+       }
 }
 
 struct ARViewContainer: UIViewRepresentable {
@@ -48,18 +76,18 @@ struct ARViewContainer: UIViewRepresentable {
         
         let arView = ARView(frame: .zero)
         let ciContext = CIContext()
-          
+        
         arView.addCoaching()
         
         ghostModel.transform.scale = SIMD3<Float>(0.005, 0.005, 0.005)
-        var ghostPosition = SIMD3<Float>(10, 0, 10)
+        let ghostPosition = SIMD3<Float>(10, 0, 10)
         ghostModel.transform.translation = ghostPosition
         
         groundModel.transform.scale = SIMD3<Float>(0.001,0.001,0.001)
         groundModel.transform.translation = SIMD3<Float>(0,0,0)
         
         shrineModel.transform.scale = SIMD3<Float>(0.1, 0.1, 0.1)
-        var shrinePosition = randomPosition(a: -5, b: -2)
+        var shrinePosition = randomPosition(a: 3, b: 5)
         shrineModel.transform.translation = shrinePosition
         
         origamiModel.transform.scale = SIMD3<Float>(0.0025,0.0025,0.0025)
@@ -71,35 +99,33 @@ struct ARViewContainer: UIViewRepresentable {
         coinModel.transform.scale = SIMD3<Float>(0.005,0.005,0.005)
         var coinPosition: SIMD3<Float>
         
-
-        // Tentukan posisi Shrine
         repeat {
             shrinePosition = randomPosition(a: -5, b: -2)
         } while isWithinRadius(ghostPosition, shrinePosition, radius: 5) || isWithinRadius(groundModel.transform.translation, shrinePosition, radius: 0.1)
-
+        
         shrineModel.transform.translation = shrinePosition
-
+        
         // Tentukan posisi Origami
         repeat {
             origamiPosition = randomPosition(a: -10, b: -2)
         } while isWithinRadius(ghostPosition, origamiPosition, radius: 5) || isWithinRadius(shrinePosition, origamiPosition, radius: 5) || isWithinRadius(groundModel.transform.translation, origamiPosition, radius: 0.1)
-
+        
         origamiModel.transform.translation = origamiPosition
-
+        
         // Tentukan posisi Bell
         repeat {
             bellPosition = randomPosition(a: -10, b: -2)
         } while isWithinRadius(ghostPosition, bellPosition, radius: 5) || isWithinRadius(shrinePosition, bellPosition, radius: 5) || isWithinRadius(origamiPosition, bellPosition, radius: 5) || isWithinRadius(groundModel.transform.translation, bellPosition, radius: 0.1)
-
+        
         bellModel.transform.translation = bellPosition
-
+        
         // Tentukan posisi Coin
         repeat {
             coinPosition = randomPosition(a: -10, b: -2)
         } while isWithinRadius(ghostPosition, coinPosition, radius: 5) || isWithinRadius(shrinePosition, coinPosition, radius: 5) || isWithinRadius(origamiPosition, coinPosition, radius: 5) || isWithinRadius(bellPosition, coinPosition, radius: 5) || isWithinRadius(groundModel.transform.translation, coinPosition, radius: 0.1)
-
+        
         coinModel.transform.translation = coinPosition
-
+        
         
         //Add models to AR Camera
         
@@ -114,7 +140,7 @@ struct ARViewContainer: UIViewRepresentable {
         
         // Configure post-processing for filter (assuming you want the filter)
         arView.renderCallbacks.postProcess = { postProcessingContext in
-           
+            
             // A filter that applies a mono style to an image.
             let monoFilter = CIFilter.photoEffectNoir()
             
@@ -139,15 +165,18 @@ struct ARViewContainer: UIViewRepresentable {
             }
         }
         
-
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { // Adjust delay if needed
             self.checkDistance(arView: arView)
             Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
-              self.checkDistance(arView: arView)
-                moveModelForward(ghostModel, arView: arView)
+                self.checkDistance(arView: arView)
+//                moveModelForward(ghostModel, arView: arView)
             }
-             }
+        }
+        
+        // detect ada longpress
+        
+        let longpress = UILongPressGestureRecognizer(target: arView, action: #selector(arView.handleLongPress(_:)))
+        arView.addGestureRecognizer(longpress)
         
         return arView
     }
@@ -157,12 +186,12 @@ struct ARViewContainer: UIViewRepresentable {
         let randomZ = Float.random(in: a...b)
         return SIMD3<Float>(randomX, 0, randomZ)
     }
-
+    
     func isWithinRadius(_ position1: SIMD3<Float>, _ position2: SIMD3<Float>, radius: Float) -> Bool {
         let distance = simd_distance(position1, position2)
         return distance < radius
     }
-
+    
     
     func checkDistance(arView: ARView) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 30) { // ini bikin jeda anggepannya invincible selama 30 detik, kalau ga pake ini, default printedDistancenya pas baru mulai itu 0 atau kadang dibawah threshold karena loading kamera.
@@ -179,63 +208,74 @@ struct ARViewContainer: UIViewRepresentable {
             
             print("Distance between ghost and camera: \(printedDistance)")
             
+            let distanceFromShrine = simd_distance(cameraPosition, shrineModel.transform.translation)
+            print("Distance from shrine: \(distanceFromShrine)")
+            
             if isModelLoaded {
                 if printedDistance <= 0.7 { // If distance is less than or equal to 0.7
                     isGameOver = true // Set game over
-                    print("Udah game over")
+                    //                    print("Udah game over")
+                }
+                
+                if distanceFromShrine <= 3 {
+                    if !isShrineFound {
+                        audioPlayer.playNarration(fileName: "ShrineNear")
+                    }
+                    isShrineFound = true
                 }
             }
-                
+            
         }
     }
-
+    
     
     func moveModelForward(_ modelEntity: ModelEntity, arView: ARView) {
-            // Define the distance you want the model to move in the Z-axis
-            let distance: Float = 0.05
+        // Define the distance you want the model to move in the Z-axis
+        let distance: Float = 0.05
         
-            let cameraPosition = arView.cameraTransform.translation
+        let cameraPosition = arView.cameraTransform.translation
+        
+        // Get the current position of the model
+        var currentPosition = modelEntity.transform.translation
+        
+        // Calculate the new position by adding the forward vector multiplied by the distance
+        currentPosition.z +=  distance
+        
+        
+        // Update the total distance traveled
+        totalDistanceTraveled += distance
+        
+        // Check if the model has traveled more than 10 meter
+        if totalDistanceTraveled >= 5.0 {
             
-            // Get the current position of the model
-            var currentPosition = modelEntity.transform.translation
+            // Respawn the ghost at position (0, 0) with random X and Z positions relative to camera
             
-            // Calculate the new position by adding the forward vector multiplied by the distance
-            currentPosition.z +=  distance
+            let respawnRadius: Float = 3.0
             
+            let randomXOffset = Float.random(in: -respawnRadius...respawnRadius)
+            let randomZOffset = Float.random(in: -respawnRadius...respawnRadius)
             
-            // Update the total distance traveled
-            totalDistanceTraveled += distance
+            let randomX = cameraPosition.x + randomXOffset
+            let randomZ = cameraPosition.z + randomZOffset
             
-            // Check if the model has traveled more than 10 meter
-            if totalDistanceTraveled >= 5.0 {
-                
-                // Respawn the ghost at position (0, 0) with random X and Z positions relative to camera
-                
-                let respawnRadius: Float = 3.0
-                
-                let randomXOffset = Float.random(in: -respawnRadius...respawnRadius)
-                let randomZOffset = Float.random(in: -respawnRadius...respawnRadius)
-                
-                let randomX = cameraPosition.x + randomXOffset
-                let randomZ = cameraPosition.z + randomZOffset
-                
-                currentPosition.x = randomX
-                currentPosition.z = randomZ
-                
-                // Reset the total distance traveled
-                totalDistanceTraveled = 0.0
-                
-                // Set the new position to the model's transform
-                modelEntity.transform.translation = currentPosition
-            }
-            else {
-                // Update the model's position if it hasn't respawned
-                modelEntity.transform.translation = currentPosition
-            }
+            currentPosition.x = randomX
+            currentPosition.z = randomZ
+            
+            // Reset the total distance traveled
+            totalDistanceTraveled = 0.0
+            
+            // Set the new position to the model's transform
+            modelEntity.transform.translation = currentPosition
         }
-
-
-  func updateUIView(_ uiView: ARView, context: Context) {
-    // Not required in this case, but can be used for updates
-  }
+        else {
+            // Update the model's position if it hasn't respawned
+            modelEntity.transform.translation = currentPosition
+        }
+    }
+    
+    
+    func updateUIView(_ uiView: ARView, context: Context) {
+        // Not required in this case, but can be used for updates
+    }
+    
 }

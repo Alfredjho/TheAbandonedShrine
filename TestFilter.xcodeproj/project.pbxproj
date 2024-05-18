@@ -8,17 +8,58 @@
 
 /* Begin PBXBuildFile section */
 		BB1C6FE62BF48286003E5CE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C6FE52BF48286003E5CE6 /* AppDelegate.swift */; };
-		BB1C6FE82BF48286003E5CE6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C6FE72BF48286003E5CE6 /* ContentView.swift */; };
 		BB1C6FEA2BF48287003E5CE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB1C6FE92BF48287003E5CE6 /* Assets.xcassets */; };
 		BB1C6FED2BF48287003E5CE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB1C6FEC2BF48287003E5CE6 /* Preview Assets.xcassets */; };
+		BB1C6FF42BF48467003E5CE6 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C6FF32BF48467003E5CE6 /* MainView.swift */; };
+		BB1C6FF62BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BB1C6FF52BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz */; };
+		BB1C6FF82BF4921A003E5CE6 /* ExARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C6FF72BF4921A003E5CE6 /* ExARView.swift */; };
+		BB1C70362BF4FD36003E5CE6 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C70352BF4FD36003E5CE6 /* AudioManager.swift */; };
+		BB1C70382BF4FD67003E5CE6 /* HorrorBGM.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70372BF4FD67003E5CE6 /* HorrorBGM.mp4 */; };
+		BB1C703A2BF5B520003E5CE6 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C70392BF5B520003E5CE6 /* MainMenuView.swift */; };
+		BB1C703C2BF5B555003E5CE6 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C703B2BF5B555003E5CE6 /* ARViewContainer.swift */; };
+		BB1C70412BF5BA10003E5CE6 /* HorrorLaugh.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70402BF5BA0F003E5CE6 /* HorrorLaugh.mp4 */; };
+		BB1C70612BF5D176003E5CE6 /* HorrorSing.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70602BF5D176003E5CE6 /* HorrorSing.mp4 */; };
+		BB1C70632BF5D1D6003E5CE6 /* HorrorWhisper.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70622BF5D1D6003E5CE6 /* HorrorWhisper.mp4 */; };
+		BB1C70652BF5D445003E5CE6 /* Japanese_Shinto_Shrine.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70642BF5D445003E5CE6 /* Japanese_Shinto_Shrine.usdz */; };
+		BB1C70732BF76068003E5CE6 /* Cute_Bronze_Bell.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70722BF76068003E5CE6 /* Cute_Bronze_Bell.usdz */; };
+		BB1C70752BF7606F003E5CE6 /* 3D_Origami_crane.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70742BF7606F003E5CE6 /* 3D_Origami_crane.usdz */; };
+		BB1C70772BF7607A003E5CE6 /* Pile_of_coins.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70762BF7607A003E5CE6 /* Pile_of_coins.usdz */; };
+		BB1C70792BF76EAF003E5CE6 /* ground.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70782BF76EAF003E5CE6 /* ground.usdz */; };
+		BB1C707B2BF791FA003E5CE6 /* JumpscareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C707A2BF791FA003E5CE6 /* JumpscareView.swift */; };
+		BB1C707F2BF7B3F6003E5CE6 /* Jumpscare.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C707E2BF7B3F6003E5CE6 /* Jumpscare.mp4 */; };
+		BB1C70842BF8BFC1003E5CE6 /* WaitingfortheSunrise-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70832BF8BFC1003E5CE6 /* WaitingfortheSunrise-Regular.ttf */; };
+		BB1C70892BF8CB5A003E5CE6 /* CollectedAll.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70862BF8CB5A003E5CE6 /* CollectedAll.mp4 */; };
+		BB1C708A2BF8CB5A003E5CE6 /* ShrineNear.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70872BF8CB5A003E5CE6 /* ShrineNear.mp4 */; };
+		BB1C708B2BF8CB5A003E5CE6 /* Spawn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70882BF8CB5A003E5CE6 /* Spawn.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		BB1C6FE22BF48286003E5CE6 /* TestFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB1C6FE52BF48286003E5CE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BB1C6FE72BF48286003E5CE6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB1C6FE92BF48287003E5CE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB1C6FEC2BF48287003E5CE6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		BB1C6FF32BF48467003E5CE6 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		BB1C6FF52BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "Mieruko-chan_shrine_Ghost.usdz"; sourceTree = "<group>"; };
+		BB1C6FF72BF4921A003E5CE6 /* ExARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExARView.swift; sourceTree = "<group>"; };
+		BB1C70352BF4FD36003E5CE6 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		BB1C70372BF4FD67003E5CE6 /* HorrorBGM.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = HorrorBGM.mp4; sourceTree = "<group>"; };
+		BB1C70392BF5B520003E5CE6 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
+		BB1C703B2BF5B555003E5CE6 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
+		BB1C70402BF5BA0F003E5CE6 /* HorrorLaugh.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = HorrorLaugh.mp4; sourceTree = "<group>"; };
+		BB1C70602BF5D176003E5CE6 /* HorrorSing.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = HorrorSing.mp4; sourceTree = "<group>"; };
+		BB1C70622BF5D1D6003E5CE6 /* HorrorWhisper.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = HorrorWhisper.mp4; sourceTree = "<group>"; };
+		BB1C70642BF5D445003E5CE6 /* Japanese_Shinto_Shrine.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Japanese_Shinto_Shrine.usdz; sourceTree = "<group>"; };
+		BB1C70722BF76068003E5CE6 /* Cute_Bronze_Bell.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Cute_Bronze_Bell.usdz; sourceTree = "<group>"; };
+		BB1C70742BF7606F003E5CE6 /* 3D_Origami_crane.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = 3D_Origami_crane.usdz; sourceTree = "<group>"; };
+		BB1C70762BF7607A003E5CE6 /* Pile_of_coins.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Pile_of_coins.usdz; sourceTree = "<group>"; };
+		BB1C70782BF76EAF003E5CE6 /* ground.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = ground.usdz; sourceTree = "<group>"; };
+		BB1C707A2BF791FA003E5CE6 /* JumpscareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpscareView.swift; sourceTree = "<group>"; };
+		BB1C707E2BF7B3F6003E5CE6 /* Jumpscare.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Jumpscare.mp4; sourceTree = "<group>"; };
+		BB1C70832BF8BFC1003E5CE6 /* WaitingfortheSunrise-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WaitingfortheSunrise-Regular.ttf"; sourceTree = "<group>"; };
+		BB1C70852BF8BFD6003E5CE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BB1C70862BF8CB5A003E5CE6 /* CollectedAll.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = CollectedAll.mp4; sourceTree = "<group>"; };
+		BB1C70872BF8CB5A003E5CE6 /* ShrineNear.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShrineNear.mp4; sourceTree = "<group>"; };
+		BB1C70882BF8CB5A003E5CE6 /* Spawn.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Spawn.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,9 +93,12 @@
 			isa = PBXGroup;
 			children = (
 				BB1C6FE52BF48286003E5CE6 /* AppDelegate.swift */,
-				BB1C6FE72BF48286003E5CE6 /* ContentView.swift */,
-				BB1C6FE92BF48287003E5CE6 /* Assets.xcassets */,
+				BB1C70852BF8BFD6003E5CE6 /* Info.plist */,
+				BB1C70802BF8B3C6003E5CE6 /* Views */,
+				BB1C70812BF8B3E2003E5CE6 /* Resources */,
+				BB1C70822BF8B408003E5CE6 /* Helper */,
 				BB1C6FEB2BF48287003E5CE6 /* Preview Content */,
+				BB1C6FE92BF48287003E5CE6 /* Assets.xcassets */,
 			);
 			path = TestFilter;
 			sourceTree = "<group>";
@@ -65,6 +109,48 @@
 				BB1C6FEC2BF48287003E5CE6 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		BB1C70802BF8B3C6003E5CE6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BB1C6FF32BF48467003E5CE6 /* MainView.swift */,
+				BB1C70392BF5B520003E5CE6 /* MainMenuView.swift */,
+				BB1C703B2BF5B555003E5CE6 /* ARViewContainer.swift */,
+				BB1C707A2BF791FA003E5CE6 /* JumpscareView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BB1C70812BF8B3E2003E5CE6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BB1C70832BF8BFC1003E5CE6 /* WaitingfortheSunrise-Regular.ttf */,
+				BB1C6FF52BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz */,
+				BB1C70782BF76EAF003E5CE6 /* ground.usdz */,
+				BB1C70762BF7607A003E5CE6 /* Pile_of_coins.usdz */,
+				BB1C70742BF7606F003E5CE6 /* 3D_Origami_crane.usdz */,
+				BB1C70722BF76068003E5CE6 /* Cute_Bronze_Bell.usdz */,
+				BB1C70642BF5D445003E5CE6 /* Japanese_Shinto_Shrine.usdz */,
+				BB1C70372BF4FD67003E5CE6 /* HorrorBGM.mp4 */,
+				BB1C70622BF5D1D6003E5CE6 /* HorrorWhisper.mp4 */,
+				BB1C70602BF5D176003E5CE6 /* HorrorSing.mp4 */,
+				BB1C70402BF5BA0F003E5CE6 /* HorrorLaugh.mp4 */,
+				BB1C707E2BF7B3F6003E5CE6 /* Jumpscare.mp4 */,
+				BB1C70862BF8CB5A003E5CE6 /* CollectedAll.mp4 */,
+				BB1C70872BF8CB5A003E5CE6 /* ShrineNear.mp4 */,
+				BB1C70882BF8CB5A003E5CE6 /* Spawn.mp4 */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		BB1C70822BF8B408003E5CE6 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				BB1C6FF72BF4921A003E5CE6 /* ExARView.swift */,
+				BB1C70352BF4FD36003E5CE6 /* AudioManager.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,7 +211,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB1C70732BF76068003E5CE6 /* Cute_Bronze_Bell.usdz in Resources */,
+				BB1C70772BF7607A003E5CE6 /* Pile_of_coins.usdz in Resources */,
 				BB1C6FED2BF48287003E5CE6 /* Preview Assets.xcassets in Resources */,
+				BB1C70892BF8CB5A003E5CE6 /* CollectedAll.mp4 in Resources */,
+				BB1C70382BF4FD67003E5CE6 /* HorrorBGM.mp4 in Resources */,
+				BB1C70652BF5D445003E5CE6 /* Japanese_Shinto_Shrine.usdz in Resources */,
+				BB1C70632BF5D1D6003E5CE6 /* HorrorWhisper.mp4 in Resources */,
+				BB1C70752BF7606F003E5CE6 /* 3D_Origami_crane.usdz in Resources */,
+				BB1C70612BF5D176003E5CE6 /* HorrorSing.mp4 in Resources */,
+				BB1C6FF62BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz in Resources */,
+				BB1C708B2BF8CB5A003E5CE6 /* Spawn.mp4 in Resources */,
+				BB1C707F2BF7B3F6003E5CE6 /* Jumpscare.mp4 in Resources */,
+				BB1C70412BF5BA10003E5CE6 /* HorrorLaugh.mp4 in Resources */,
+				BB1C708A2BF8CB5A003E5CE6 /* ShrineNear.mp4 in Resources */,
+				BB1C70792BF76EAF003E5CE6 /* ground.usdz in Resources */,
+				BB1C70842BF8BFC1003E5CE6 /* WaitingfortheSunrise-Regular.ttf in Resources */,
 				BB1C6FEA2BF48287003E5CE6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -137,8 +238,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BB1C6FE82BF48286003E5CE6 /* ContentView.swift in Sources */,
+				BB1C703A2BF5B520003E5CE6 /* MainMenuView.swift in Sources */,
+				BB1C707B2BF791FA003E5CE6 /* JumpscareView.swift in Sources */,
+				BB1C6FF82BF4921A003E5CE6 /* ExARView.swift in Sources */,
+				BB1C6FF42BF48467003E5CE6 /* MainView.swift in Sources */,
+				BB1C70362BF4FD36003E5CE6 /* AudioManager.swift in Sources */,
 				BB1C6FE62BF48286003E5CE6 /* AppDelegate.swift in Sources */,
+				BB1C703C2BF5B555003E5CE6 /* ARViewContainer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +381,7 @@
 				DEVELOPMENT_TEAM = NJGLNB2TGW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TestFilter/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -306,6 +413,7 @@
 				DEVELOPMENT_TEAM = NJGLNB2TGW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TestFilter/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
