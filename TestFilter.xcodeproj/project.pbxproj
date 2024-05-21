@@ -31,6 +31,9 @@
 		BB1C70892BF8CB5A003E5CE6 /* CollectedAll.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70862BF8CB5A003E5CE6 /* CollectedAll.mp4 */; };
 		BB1C708A2BF8CB5A003E5CE6 /* ShrineNear.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70872BF8CB5A003E5CE6 /* ShrineNear.mp4 */; };
 		BB1C708B2BF8CB5A003E5CE6 /* Spawn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70882BF8CB5A003E5CE6 /* Spawn.mp4 */; };
+		BB1C708F2BFC60EE003E5CE6 /* CollectItem.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C708E2BFC60EE003E5CE6 /* CollectItem.mp4 */; };
+		BB1C70912BFC6772003E5CE6 /* WinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C70902BFC6772003E5CE6 /* WinView.swift */; };
+		BB1C70932BFC6E3A003E5CE6 /* ghostSigh.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70922BFC6E3A003E5CE6 /* ghostSigh.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +63,9 @@
 		BB1C70862BF8CB5A003E5CE6 /* CollectedAll.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = CollectedAll.mp4; sourceTree = "<group>"; };
 		BB1C70872BF8CB5A003E5CE6 /* ShrineNear.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShrineNear.mp4; sourceTree = "<group>"; };
 		BB1C70882BF8CB5A003E5CE6 /* Spawn.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Spawn.mp4; sourceTree = "<group>"; };
+		BB1C708E2BFC60EE003E5CE6 /* CollectItem.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = CollectItem.mp4; sourceTree = "<group>"; };
+		BB1C70902BFC6772003E5CE6 /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
+		BB1C70922BFC6E3A003E5CE6 /* ghostSigh.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = ghostSigh.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +124,7 @@
 				BB1C70392BF5B520003E5CE6 /* MainMenuView.swift */,
 				BB1C703B2BF5B555003E5CE6 /* ARViewContainer.swift */,
 				BB1C707A2BF791FA003E5CE6 /* JumpscareView.swift */,
+				BB1C70902BFC6772003E5CE6 /* WinView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -137,7 +144,9 @@
 				BB1C70602BF5D176003E5CE6 /* HorrorSing.mp4 */,
 				BB1C70402BF5BA0F003E5CE6 /* HorrorLaugh.mp4 */,
 				BB1C707E2BF7B3F6003E5CE6 /* Jumpscare.mp4 */,
+				BB1C70922BFC6E3A003E5CE6 /* ghostSigh.mp4 */,
 				BB1C70862BF8CB5A003E5CE6 /* CollectedAll.mp4 */,
+				BB1C708E2BFC60EE003E5CE6 /* CollectItem.mp4 */,
 				BB1C70872BF8CB5A003E5CE6 /* ShrineNear.mp4 */,
 				BB1C70882BF8CB5A003E5CE6 /* Spawn.mp4 */,
 			);
@@ -218,12 +227,14 @@
 				BB1C70382BF4FD67003E5CE6 /* HorrorBGM.mp4 in Resources */,
 				BB1C70652BF5D445003E5CE6 /* Japanese_Shinto_Shrine.usdz in Resources */,
 				BB1C70632BF5D1D6003E5CE6 /* HorrorWhisper.mp4 in Resources */,
+				BB1C70932BFC6E3A003E5CE6 /* ghostSigh.mp4 in Resources */,
 				BB1C70752BF7606F003E5CE6 /* 3D_Origami_crane.usdz in Resources */,
 				BB1C70612BF5D176003E5CE6 /* HorrorSing.mp4 in Resources */,
 				BB1C6FF62BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz in Resources */,
 				BB1C708B2BF8CB5A003E5CE6 /* Spawn.mp4 in Resources */,
 				BB1C707F2BF7B3F6003E5CE6 /* Jumpscare.mp4 in Resources */,
 				BB1C70412BF5BA10003E5CE6 /* HorrorLaugh.mp4 in Resources */,
+				BB1C708F2BFC60EE003E5CE6 /* CollectItem.mp4 in Resources */,
 				BB1C708A2BF8CB5A003E5CE6 /* ShrineNear.mp4 in Resources */,
 				BB1C70792BF76EAF003E5CE6 /* ground.usdz in Resources */,
 				BB1C70842BF8BFC1003E5CE6 /* WaitingfortheSunrise-Regular.ttf in Resources */,
@@ -239,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB1C703A2BF5B520003E5CE6 /* MainMenuView.swift in Sources */,
+				BB1C70912BFC6772003E5CE6 /* WinView.swift in Sources */,
 				BB1C707B2BF791FA003E5CE6 /* JumpscareView.swift in Sources */,
 				BB1C6FF82BF4921A003E5CE6 /* ExARView.swift in Sources */,
 				BB1C6FF42BF48467003E5CE6 /* MainView.swift in Sources */,
@@ -383,6 +395,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TestFilter/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Used for detecting mic at shrine";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "To detect what user says at shrine";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
@@ -415,6 +429,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TestFilter/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Used for detecting mic at shrine";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "To detect what user says at shrine";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;

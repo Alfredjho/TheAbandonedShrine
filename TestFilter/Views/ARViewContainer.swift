@@ -2,10 +2,13 @@ import SwiftUI
 import RealityKit
 import ARKit
 import CoreImage.CIFilterBuiltins
+import AVFoundation
+import Speech
 
 var isModelLoaded = false
 var audioPlayer = AudioManager()
 var isShrineFound = false
+var hasSpawned = false
 
 extension ARView: ARCoachingOverlayViewDelegate {
     func addCoaching() {
@@ -18,41 +21,27 @@ extension ARView: ARCoachingOverlayViewDelegate {
     }
 
     public func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
-        isModelLoaded = true
         print("did deactivate")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-            audioPlayer.playNarration(fileName: "Spawn")
+            if !hasSpawned {
+                audioPlayer.playNarration(fileName: "Spawn")
+            }
+            hasSpawned = true
         }
         
     }
-}
-
-// ini baru berhasil detect bahwa ada long press di cameraAR, belom bisa detek modelEntity nya
-
-extension ARView {
-    @objc func handleLongPress(_ recognizer: UITapGestureRecognizer? = nil) {
-
-           let touchInView = recognizer?.location(in: self)
-        
-           guard let touchInView = recognizer?.location(in: self) else {
-               return
-           }
-
-           guard let modelEntity = self.entity(at: touchInView) as? ModelEntity else {
-               print("===========================================modelEntity not found at \(touchInView)")
-               return
-           }
-           
-           print("===============================================Long press detected on - \(modelEntity.name)")
-           
-       }
 }
 
 struct ARViewContainer: UIViewRepresentable {
     
     @State private var totalDistanceTraveled: Float = 0.0
     @Binding var isGameOver: Bool
+    @Binding var isWin: Bool
+    @Binding var isOrigamiCollected: Bool
+    @Binding var isBellCollected: Bool
+    @Binding var isCoinCollected: Bool
+    @Binding var isEverythingCollected: Bool
     
     var timer: Timer?
     var ghostModel: ModelEntity
@@ -62,7 +51,7 @@ struct ARViewContainer: UIViewRepresentable {
     var bellModel: ModelEntity
     var coinModel: ModelEntity
     
-    init(isGameOver: Binding<Bool>) {
+    init(isGameOver: Binding<Bool>, isWin: Binding<Bool>, isOrigamiCollected: Binding<Bool>, isBellCollected: Binding<Bool>, isCoinCollected: Binding<Bool>, isEverythingCollected: Binding<Bool>) {
         ghostModel = try! ModelEntity.loadModel(named: "Mieruko-chan_shrine_Ghost.usdz")
         shrineModel = try! ModelEntity.loadModel(named: "Japanese_Shinto_Shrine.usdz")
         groundModel = try! ModelEntity.loadModel(named: "ground.usdz")
@@ -70,6 +59,11 @@ struct ARViewContainer: UIViewRepresentable {
         bellModel = try! ModelEntity.loadModel(named: "Cute_Bronze_Bell.usdz")
         coinModel = try! ModelEntity.loadModel(named: "Pile_of_coins.usdz")
         _isGameOver = isGameOver
+        _isWin = isWin
+        _isOrigamiCollected = isOrigamiCollected
+        _isBellCollected = isBellCollected
+        _isCoinCollected = isCoinCollected
+        _isEverythingCollected = isEverythingCollected
     }
     
     func makeUIView(context: Context) -> ARView {
@@ -78,52 +72,29 @@ struct ARViewContainer: UIViewRepresentable {
         let ciContext = CIContext()
         
         arView.addCoaching()
+        isModelLoaded = true
         
         ghostModel.transform.scale = SIMD3<Float>(0.005, 0.005, 0.005)
-        let ghostPosition = SIMD3<Float>(10, 0, 10)
+        let ghostPosition = SIMD3<Float>(5,0,5)
         ghostModel.transform.translation = ghostPosition
         
         groundModel.transform.scale = SIMD3<Float>(0.001,0.001,0.001)
         groundModel.transform.translation = SIMD3<Float>(0,0,0)
         
         shrineModel.transform.scale = SIMD3<Float>(0.1, 0.1, 0.1)
-        var shrinePosition = randomPosition(a: 3, b: 5)
+        let shrinePosition = SIMD3<Float>(0,0,-4)
         shrineModel.transform.translation = shrinePosition
         
         origamiModel.transform.scale = SIMD3<Float>(0.0025,0.0025,0.0025)
-        var origamiPosition: SIMD3<Float>
-        
-        bellModel.transform.scale = SIMD3<Float>(0.0025,0.0025,0.0025)
-        var bellPosition: SIMD3<Float>
-        
-        coinModel.transform.scale = SIMD3<Float>(0.005,0.005,0.005)
-        var coinPosition: SIMD3<Float>
-        
-        repeat {
-            shrinePosition = randomPosition(a: -5, b: -2)
-        } while isWithinRadius(ghostPosition, shrinePosition, radius: 5) || isWithinRadius(groundModel.transform.translation, shrinePosition, radius: 0.1)
-        
-        shrineModel.transform.translation = shrinePosition
-        
-        // Tentukan posisi Origami
-        repeat {
-            origamiPosition = randomPosition(a: -10, b: -2)
-        } while isWithinRadius(ghostPosition, origamiPosition, radius: 5) || isWithinRadius(shrinePosition, origamiPosition, radius: 5) || isWithinRadius(groundModel.transform.translation, origamiPosition, radius: 0.1)
-        
+        let origamiPosition = randomPosition(a: 4, b: 8)
         origamiModel.transform.translation = origamiPosition
         
-        // Tentukan posisi Bell
-        repeat {
-            bellPosition = randomPosition(a: -10, b: -2)
-        } while isWithinRadius(ghostPosition, bellPosition, radius: 5) || isWithinRadius(shrinePosition, bellPosition, radius: 5) || isWithinRadius(origamiPosition, bellPosition, radius: 5) || isWithinRadius(groundModel.transform.translation, bellPosition, radius: 0.1)
-        
+        bellModel.transform.scale = SIMD3<Float>(0.0025,0.0025,0.0025)
+        let bellPosition = randomPosition(a: -3, b: -1)
         bellModel.transform.translation = bellPosition
         
-        // Tentukan posisi Coin
-        repeat {
-            coinPosition = randomPosition(a: -10, b: -2)
-        } while isWithinRadius(ghostPosition, coinPosition, radius: 5) || isWithinRadius(shrinePosition, coinPosition, radius: 5) || isWithinRadius(origamiPosition, coinPosition, radius: 5) || isWithinRadius(bellPosition, coinPosition, radius: 5) || isWithinRadius(groundModel.transform.translation, coinPosition, radius: 0.1)
-        
+        coinModel.transform.scale = SIMD3<Float>(0.005,0.005,0.005)
+        let coinPosition = randomPosition(a: -8, b: -5)
         coinModel.transform.translation = coinPosition
         
         
@@ -166,20 +137,38 @@ struct ARViewContainer: UIViewRepresentable {
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { // Adjust delay if needed
-            self.checkDistance(arView: arView)
             Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
                 self.checkDistance(arView: arView)
-//                moveModelForward(ghostModel, arView: arView)
+                
+                moveModelForward(ghostModel, arView: arView)
+                
+                if distanceFromCamera(arView: arView, model: shrineModel) <= 3  && isEverythingCollected{
+                    shrineModel.generateCollisionShapes(recursive: true)
+                }
+                
+                if distanceFromCamera(arView: arView, model: origamiModel) <= 3 {
+                    origamiModel.generateCollisionShapes(recursive: true)
+                }
+                
+                if distanceFromCamera(arView: arView, model: bellModel) <= 3 {
+                    bellModel.generateCollisionShapes(recursive: true)
+                }
+                
+                if distanceFromCamera(arView: arView, model: coinModel) <= 3 {
+                    coinModel.generateCollisionShapes(recursive: true)
+                }
+                
             }
         }
         
-        // detect ada longpress
+        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
+        arView.addGestureRecognizer(tapGesture)
         
-        let longpress = UILongPressGestureRecognizer(target: arView, action: #selector(arView.handleLongPress(_:)))
-        arView.addGestureRecognizer(longpress)
+
         
         return arView
     }
+    
     
     func randomPosition(a: Float, b: Float) -> SIMD3<Float> {
         let randomX = Float.random(in: a...b)
@@ -192,17 +181,197 @@ struct ARViewContainer: UIViewRepresentable {
         return distance < radius
     }
     
+    func makeCoordinator() -> Coordinator {
+        Coordinator(shrineModel: shrineModel, origamiModel: origamiModel, bellModel: bellModel, 
+                    coinModel: coinModel, isOrigamiCollected: $isOrigamiCollected, isBellCollected: $isBellCollected, isCoinCollected: $isCoinCollected, isEverythingCollected: $isEverythingCollected, isWin: $isWin)
+    }
+    
+    class Coordinator: NSObject {
+
+        var shrineModel: ModelEntity
+        var origamiModel: ModelEntity
+        var bellModel: ModelEntity
+        var coinModel: ModelEntity
+        @Binding var isOrigamiCollected: Bool
+        @Binding var isBellCollected: Bool
+        @Binding var isCoinCollected: Bool
+        @Binding var isEverythingCollected: Bool
+        @Binding var isWin: Bool
+                
+        
+        @Published var isListening: Bool = false
+        @State private var recognizedText = ""
+        private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
+        private var audioEngine = AVAudioEngine()
+        
+        init(shrineModel: ModelEntity, origamiModel: ModelEntity, bellModel: ModelEntity, coinModel: ModelEntity, isOrigamiCollected: Binding<Bool>, isBellCollected: Binding<Bool>, isCoinCollected: Binding<Bool>, isEverythingCollected: Binding<Bool>, isWin: Binding<Bool>) {
+                    self.shrineModel = shrineModel
+                    self.origamiModel = origamiModel
+                    self.bellModel = bellModel
+                    self.coinModel = coinModel
+                    _isOrigamiCollected = isOrigamiCollected
+                    _isBellCollected = isBellCollected
+                    _isCoinCollected = isCoinCollected
+                    _isEverythingCollected = isEverythingCollected
+                    _isWin = isWin
+                    super.init()
+                }
+        
+        @objc func handleTap(_ sender: UITapGestureRecognizer) {
+            guard let arView = sender.view as? ARView else {return}
+            let tapLocation = sender.location(in: arView)
+            
+            if let entity = arView.entity(at: tapLocation) {
+                    print("Tapped the model!")
+                
+                if entity == shrineModel {
+                    print("LALALALALLALALALALALALALALALALALLAALLALAALLALALALALALALALALALAALLAALALALALA")
+                    //speech recognition disini lalu kalau menang redirect ke winPage
+                    
+                    toggleListening()
+                }
+                
+                if entity == origamiModel {
+                    self.isOrigamiCollected = true
+                    audioPlayer.playNarration(fileName: "CollectItem")
+                    entity.removeFromParent()
+                    
+                    if (self.isBellCollected && self.isCoinCollected) {
+                        self.isEverythingCollected = true
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            audioPlayer.playNarration(fileName: "CollectedAll")
+                        }
+                    }
+                }
+                
+                if entity == bellModel {
+                    self.isBellCollected = true
+                    audioPlayer.playNarration(fileName: "CollectItem")
+                    entity.removeFromParent()
+                    
+                    if (self.isOrigamiCollected && self.isCoinCollected) {
+                        self.isEverythingCollected = true
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            audioPlayer.playNarration(fileName: "CollectedAll")
+                        }
+                    }
+                }
+                
+                if entity == coinModel {
+                    self.isCoinCollected = true
+                    audioPlayer.playNarration(fileName: "CollectItem")
+                    entity.removeFromParent()
+                    
+                    if (self.isBellCollected && self.isOrigamiCollected) {
+                        self.isEverythingCollected = true
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            audioPlayer.playNarration(fileName: "CollectedAll")
+                        }
+                    }
+                }
+                
+                
+            } else {
+                print("================================================= You tapped at nothing")
+            }
+        }
+        
+        func toggleListening() {
+            print(isListening)
+            if isListening {
+                stopListening()
+            } else {
+          
+                startListening()
+            }
+        }
+        
+        func stopListening() {
+            print("listening stopped")
+            audioEngine.stop()
+            audioEngine.inputNode.removeTap(onBus: 0)
+            isListening = false
+        }
+            
+        func startListening() {
+            print("start listening")
+            guard SFSpeechRecognizer.authorizationStatus() == .authorized else {
+                SFSpeechRecognizer.requestAuthorization { status in
+                    if status == .authorized {
+                        self.startListening()
+                    }
+                }
+                return
+            }
+    
+            try? AVAudioSession.sharedInstance().setCategory(.record)
+            try? AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+    
+            let recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+            let inputNode = audioEngine.inputNode
+            let recordingFormat = inputNode.outputFormat(forBus: 0)
+    
+            inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, _) in
+                recognitionRequest.append(buffer)
+            }
+    
+            speechRecognizer.recognitionTask(with: recognitionRequest) { (result, _) in
+                if let result = result {
+                    let bestString = result.bestTranscription.formattedString
+                    self.recognizedText = bestString
+                    if bestString.lowercased().contains("sorry") {
+                        // Detected the secret word "swift"
+                        print("Secret word spelled")
+                        self.isWin = true
+                    }
+                }
+            }
+    
+            audioEngine.prepare()
+            do {
+                try audioEngine.start()
+            } catch {
+                print("Error starting audio engine: \(error.localizedDescription)")
+            }
+    
+            isListening = true
+        }
+            
+    }
+    
+    
+    
+    func distanceFromCamera(arView: ARView, model: ModelEntity) -> Float {
+        let modelPosition = model.transform.translation
+        let cameraPosition = arView.cameraTransform.translation
+        
+        let distanceFromCamera = simd_distance(cameraPosition, modelPosition)
+        
+        return distanceFromCamera
+    }
+    
     
     func checkDistance(arView: ARView) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 30) { // ini bikin jeda anggepannya invincible selama 30 detik, kalau ga pake ini, default printedDistancenya pas baru mulai itu 0 atau kadang dibawah threshold karena loading kamera.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { // ini bikin jeda anggepannya invincible selama 15 detik, kalau ga pake ini, default printedDistancenya pas baru mulai itu 0 atau kadang dibawah threshold karena loading kamera.
             
             let cameraPosition = arView.cameraTransform.translation
             print("cameraPosition: \(cameraPosition)")
+            
             let ghostModelPosition = ghostModel.transform.translation
             print("ghostPosition: \(ghostModelPosition)")
             
-            let groundPosition = groundModel.transform.translation
-            print("groundPosition: \(groundPosition)")
+            let origamiModelPosition = origamiModel.transform.translation
+            print("Origami Position: \(origamiModelPosition)")
+            
+            let BellModelPosition = bellModel.transform.translation
+            print("Bell Position: \(BellModelPosition)")
+            
+            let CoinModelPosition = coinModel.transform.translation
+            print("Coin Position: \(CoinModelPosition)")
+            
             
             let printedDistance = simd_distance(cameraPosition, ghostModelPosition)
             
@@ -211,13 +380,22 @@ struct ARViewContainer: UIViewRepresentable {
             let distanceFromShrine = simd_distance(cameraPosition, shrineModel.transform.translation)
             print("Distance from shrine: \(distanceFromShrine)")
             
+            let distanceFromOrigami = simd_distance(cameraPosition, origamiModelPosition)
+            print("Distance from Origami: \(distanceFromOrigami)")
+            
+            let distanceFromBell = simd_distance(cameraPosition, BellModelPosition)
+            print("Distance from Bell: \(distanceFromBell)")
+            
+            let distanceFromCoin = simd_distance(cameraPosition, CoinModelPosition)
+            print("Distance from Coin: \(distanceFromCoin)")
+            
             if isModelLoaded {
-                if printedDistance <= 0.7 { // If distance is less than or equal to 0.7
+                if printedDistance <= 1.0 { // If distance is less than or equal to 1
                     isGameOver = true // Set game over
                     //                    print("Udah game over")
                 }
                 
-                if distanceFromShrine <= 3 {
+                if distanceFromShrine <= 3.5 {
                     if !isShrineFound {
                         audioPlayer.playNarration(fileName: "ShrineNear")
                     }
@@ -231,7 +409,11 @@ struct ARViewContainer: UIViewRepresentable {
     
     func moveModelForward(_ modelEntity: ModelEntity, arView: ARView) {
         // Define the distance you want the model to move in the Z-axis
-        let distance: Float = 0.05
+        var distance: Float = 0.075
+        
+        if isEverythingCollected {
+            distance = 0.1
+        }
         
         let cameraPosition = arView.cameraTransform.translation
         
@@ -246,18 +428,18 @@ struct ARViewContainer: UIViewRepresentable {
         totalDistanceTraveled += distance
         
         // Check if the model has traveled more than 10 meter
-        if totalDistanceTraveled >= 5.0 {
+        if totalDistanceTraveled >= 10.0 {
             
             // Respawn the ghost at position (0, 0) with random X and Z positions relative to camera
             
-            let respawnRadius: Float = 3.0
+            let respawnRadius: Float = 5.0
             
             let randomXOffset = Float.random(in: -respawnRadius...respawnRadius)
             let randomZOffset = Float.random(in: -respawnRadius...respawnRadius)
             
             let randomX = cameraPosition.x + randomXOffset
             let randomZ = cameraPosition.z + randomZOffset
-            
+
             currentPosition.x = randomX
             currentPosition.z = randomZ
             

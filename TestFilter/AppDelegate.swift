@@ -7,6 +7,8 @@
 
 import UIKit
 import SwiftUI
+import AVFoundation
+import Speech
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,6 +26,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = UIHostingController(rootView: contentView)
         self.window = window
         window.makeKeyAndVisible()
+        
+        SFSpeechRecognizer.requestAuthorization { authStatus in
+            switch authStatus {
+            case .authorized:
+                print("Speech recognition authorized")
+            case .denied, .restricted, .notDetermined:
+                print("Speech recognition not authorized")
+            @unknown default:
+                fatalError("Unknown authorization status")
+            }
+        }
+
+        AVAudioSession.sharedInstance().requestRecordPermission { granted in
+            if granted {
+                print("Microphone access granted")
+            } else {
+                print("Microphone access denied")
+            }
+        }
+
         return true
     }
 

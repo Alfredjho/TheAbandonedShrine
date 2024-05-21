@@ -8,7 +8,7 @@ struct MainMenuView: View {
     var body: some View {
         ZStack {
             
-            Image("HorrorBG-Phone")
+            Image("MenuBG")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
@@ -17,7 +17,7 @@ struct MainMenuView: View {
                 
                 Image("Title")
                     .resizable()
-                    .frame(maxWidth: 350, maxHeight: 200)
+                    .frame(maxWidth: 500, maxHeight: 300)
                 
                 Button{
                     isARViewPresented.toggle()
