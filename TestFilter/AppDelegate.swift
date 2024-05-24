@@ -37,14 +37,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("Unknown authorization status")
             }
         }
-
-        AVAudioSession.sharedInstance().requestRecordPermission { granted in
+        
+        AVAudioApplication.requestRecordPermission(completionHandler: { granted in
             if granted {
                 print("Microphone access granted")
             } else {
                 print("Microphone access denied")
             }
-        }
+        })
 
         return true
     }

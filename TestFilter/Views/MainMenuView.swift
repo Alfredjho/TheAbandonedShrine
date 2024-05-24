@@ -27,6 +27,7 @@ struct MainMenuView: View {
                             .foregroundStyle(Color.white)
                 }
                 .padding(.top, 80)
+                
             }
             .onAppear {
                 audioPlayer.playBgMusic()

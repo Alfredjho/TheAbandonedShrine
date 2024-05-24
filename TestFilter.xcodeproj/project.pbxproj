@@ -34,6 +34,9 @@
 		BB1C708F2BFC60EE003E5CE6 /* CollectItem.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C708E2BFC60EE003E5CE6 /* CollectItem.mp4 */; };
 		BB1C70912BFC6772003E5CE6 /* WinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C70902BFC6772003E5CE6 /* WinView.swift */; };
 		BB1C70932BFC6E3A003E5CE6 /* ghostSigh.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70922BFC6E3A003E5CE6 /* ghostSigh.mp4 */; };
+		BBC77AFE2BFCE018002EB744 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC77AFD2BFCE018002EB744 /* Coordinator.swift */; };
+		BBC77B022BFDCC9D002EB744 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC77B012BFDCC9D002EB744 /* HapticManager.swift */; };
+		BBC77B042C00966A002EB744 /* GameStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC77B032C00966A002EB744 /* GameStatus.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +69,9 @@
 		BB1C708E2BFC60EE003E5CE6 /* CollectItem.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = CollectItem.mp4; sourceTree = "<group>"; };
 		BB1C70902BFC6772003E5CE6 /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
 		BB1C70922BFC6E3A003E5CE6 /* ghostSigh.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = ghostSigh.mp4; sourceTree = "<group>"; };
+		BBC77AFD2BFCE018002EB744 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		BBC77B012BFDCC9D002EB744 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
+		BBC77B032C00966A002EB744 /* GameStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStatus.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +164,9 @@
 			children = (
 				BB1C6FF72BF4921A003E5CE6 /* ExARView.swift */,
 				BB1C70352BF4FD36003E5CE6 /* AudioManager.swift */,
+				BBC77AFD2BFCE018002EB744 /* Coordinator.swift */,
+				BBC77B012BFDCC9D002EB744 /* HapticManager.swift */,
+				BBC77B032C00966A002EB744 /* GameStatus.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -255,8 +264,11 @@
 				BB1C6FF82BF4921A003E5CE6 /* ExARView.swift in Sources */,
 				BB1C6FF42BF48467003E5CE6 /* MainView.swift in Sources */,
 				BB1C70362BF4FD36003E5CE6 /* AudioManager.swift in Sources */,
+				BBC77B022BFDCC9D002EB744 /* HapticManager.swift in Sources */,
+				BBC77B042C00966A002EB744 /* GameStatus.swift in Sources */,
 				BB1C6FE62BF48286003E5CE6 /* AppDelegate.swift in Sources */,
 				BB1C703C2BF5B555003E5CE6 /* ARViewContainer.swift in Sources */,
+				BBC77AFE2BFCE018002EB744 /* Coordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +406,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TestFilter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "The-Abandoned-Shrine";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Used for detecting mic at shrine";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "To detect what user says at shrine";
@@ -428,6 +441,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TestFilter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "The-Abandoned-Shrine";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Used for detecting mic at shrine";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "To detect what user says at shrine";

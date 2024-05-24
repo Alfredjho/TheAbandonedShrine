@@ -7,7 +7,9 @@ struct WinView: View {
     
     var body: some View {
         VStack {
+            
             ZStack {
+                
                 Image("winBG")
                     .resizable()
                     .ignoresSafeArea()
@@ -16,12 +18,14 @@ struct WinView: View {
                 if winTextAppear {
                     winText()
                 }
+                
             }
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.winTextAppear = true
                 }
             }
+            
         }
         .onAppear {
             audioPlayer.playNarration(fileName: "ghostSigh")

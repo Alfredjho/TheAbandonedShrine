@@ -7,7 +7,9 @@ struct JumpscareView: View {
     
     var body: some View {
         VStack {
+            
             ZStack {
+                
                 Image("JumpscareBG")
                     .resizable()
                     .ignoresSafeArea()
@@ -16,19 +18,24 @@ struct JumpscareView: View {
                 if gameOverTextAppear {
                     gameOverText()
                 }
+                
             }
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.gameOverTextAppear = true
                 }
             }
+            
         }
+        
         .onAppear {
             audioPlayer.playJumpscare()
         }
+        
     }
     
     func gameOverText() -> some View {
+        
         VStack {
             Image("gameOver")
                 .resizable()
@@ -40,7 +47,8 @@ struct JumpscareView: View {
                 .padding(.top, -50)
             
             Button(action: {
-                presentationMode.wrappedValue.dismiss()}
+                presentationMode.wrappedValue.dismiss()
+            }
             ) {
                 Text("-Menu-")
                     .font(.custom("WaitingfortheSunrise", size: 64))
@@ -48,7 +56,9 @@ struct JumpscareView: View {
             }
             .padding(.top, 50)
         }
+        
     }
+    
 }
 
 //#Preview {

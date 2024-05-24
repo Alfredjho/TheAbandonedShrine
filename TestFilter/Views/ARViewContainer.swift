@@ -4,11 +4,7 @@ import ARKit
 import CoreImage.CIFilterBuiltins
 import AVFoundation
 import Speech
-
-var isModelLoaded = false
-var audioPlayer = AudioManager()
-var isShrineFound = false
-var hasSpawned = false
+import CoreHaptics
 
 extension ARView: ARCoachingOverlayViewDelegate {
     func addCoaching() {
@@ -21,14 +17,6 @@ extension ARView: ARCoachingOverlayViewDelegate {
     }
 
     public func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
-        print("did deactivate")
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-            if !hasSpawned {
-                audioPlayer.playNarration(fileName: "Spawn")
-            }
-            hasSpawned = true
-        }
         
     }
 }
@@ -36,6 +24,10 @@ extension ARView: ARCoachingOverlayViewDelegate {
 struct ARViewContainer: UIViewRepresentable {
     
     @State private var totalDistanceTraveled: Float = 0.0
+    @State private var hasSpawned = false
+    @State private var hapticEngine: CHHapticEngine?
+    @State private var hapticPlayer: CHHapticPatternPlayer?
+    
     @Binding var isGameOver: Bool
     @Binding var isWin: Bool
     @Binding var isOrigamiCollected: Bool
@@ -50,6 +42,9 @@ struct ARViewContainer: UIViewRepresentable {
     var origamiModel: ModelEntity
     var bellModel: ModelEntity
     var coinModel: ModelEntity
+    var hapticManager: HapticManager
+    var audioPlayer = AudioManager()
+    var gameStatus = GameStatus()
     
     init(isGameOver: Binding<Bool>, isWin: Binding<Bool>, isOrigamiCollected: Binding<Bool>, isBellCollected: Binding<Bool>, isCoinCollected: Binding<Bool>, isEverythingCollected: Binding<Bool>) {
         ghostModel = try! ModelEntity.loadModel(named: "Mieruko-chan_shrine_Ghost.usdz")
@@ -64,16 +59,10 @@ struct ARViewContainer: UIViewRepresentable {
         _isBellCollected = isBellCollected
         _isCoinCollected = isCoinCollected
         _isEverythingCollected = isEverythingCollected
+        hapticManager = HapticManager()
     }
     
-    func makeUIView(context: Context) -> ARView {
-        
-        let arView = ARView(frame: .zero)
-        let ciContext = CIContext()
-        
-        arView.addCoaching()
-        isModelLoaded = true
-        
+    func manageModels() {
         ghostModel.transform.scale = SIMD3<Float>(0.005, 0.005, 0.005)
         let ghostPosition = SIMD3<Float>(5,0,5)
         ghostModel.transform.translation = ghostPosition
@@ -86,21 +75,27 @@ struct ARViewContainer: UIViewRepresentable {
         shrineModel.transform.translation = shrinePosition
         
         origamiModel.transform.scale = SIMD3<Float>(0.0025,0.0025,0.0025)
-        let origamiPosition = randomPosition(a: 4, b: 8)
+        let origamiPosition = randomPosition(a: 4, b: 7)
         origamiModel.transform.translation = origamiPosition
         
         bellModel.transform.scale = SIMD3<Float>(0.0025,0.0025,0.0025)
-        let bellPosition = randomPosition(a: -3, b: -1)
+        let bellPosition = randomPosition(a: -7, b: -4)
         bellModel.transform.translation = bellPosition
         
         coinModel.transform.scale = SIMD3<Float>(0.005,0.005,0.005)
-        let coinPosition = randomPosition(a: -8, b: -5)
+        let coinPosition = randomPosition(a: -7, b: -3)
         coinModel.transform.translation = coinPosition
+    }
+    
+    func addModelsToScene(arView: ARView) {
         
+        let config = ARWorldTrackingConfiguration()
+        config.planeDetection = [.horizontal]
+        config.environmentTexturing = .automatic
+        config.planeDetection = [.horizontal]
+        arView.session.run(config)
         
-        //Add models to AR Camera
-        
-        let anchor = AnchorEntity(.plane(.horizontal, classification: .any, minimumBounds: SIMD2<Float>(0.2, 0.2)))
+        let anchor = AnchorEntity(.plane(.horizontal, classification: .floor, minimumBounds: SIMD2<Float>(0.2, 0.2)))
         anchor.children.append( ghostModel)
         anchor.children.append(shrineModel)
         anchor.children.append(groundModel)
@@ -108,241 +103,102 @@ struct ARViewContainer: UIViewRepresentable {
         anchor.children.append(bellModel)
         anchor.children.append(coinModel)
         arView.scene.anchors.append(anchor)
+    }
+    
+    func makeUIView(context: Context) -> ARView {
         
-        // Configure post-processing for filter (assuming you want the filter)
+        let arView = ARView(frame: .zero)
+        let ciContext = CIContext()
+        
+        arView.addCoaching()
+        gameStatus.isModelLoaded = true
+        
+        manageModels()
+        addModelsToScene(arView: arView)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+            if !hasSpawned {
+                audioPlayer.playNarration(fileName: "Spawn")
+            }
+            self.hasSpawned = true
+        }
+       
         arView.renderCallbacks.postProcess = { postProcessingContext in
             
-            // A filter that applies a mono style to an image.
             let monoFilter = CIFilter.photoEffectNoir()
             
-            // Make a CIImage from the rendered frame buffer.
             let source = CIImage(mtlTexture: postProcessingContext.sourceColorTexture)!
-                .oriented(.downMirrored) // This orientation is essential to make sure that CoreImage interprets the texture contents correctly.
+                .oriented(.downMirrored)
             
-            // Set the source image as the input to the mono filter.
             monoFilter.inputImage = source
             
-            // Request the filtered output image.
             let filteredSource = monoFilter.outputImage!
             
-            // Render the filtered output image to the target color texture (this is the texture that ultimately gets displayed).
             do {
                 let renderTask = try ciContext.startTask(toRender: filteredSource, to: .init(mtlTexture: postProcessingContext.targetColorTexture, commandBuffer: nil))
-                
-                // You must waitUntilCompleted here. RealityKit is expecting all post-processing work to be finished by the end of this closure.
                 try renderTask.waitUntilCompleted()
             } catch {
                 fatalError(error.localizedDescription)
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { // Adjust delay if needed
-            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
-                self.checkDistance(arView: arView)
-                
-                moveModelForward(ghostModel, arView: arView)
-                
-                if distanceFromCamera(arView: arView, model: shrineModel) <= 3  && isEverythingCollected{
-                    shrineModel.generateCollisionShapes(recursive: true)
-                }
-                
-                if distanceFromCamera(arView: arView, model: origamiModel) <= 3 {
-                    origamiModel.generateCollisionShapes(recursive: true)
-                }
-                
-                if distanceFromCamera(arView: arView, model: bellModel) <= 3 {
-                    bellModel.generateCollisionShapes(recursive: true)
-                }
-                
-                if distanceFromCamera(arView: arView, model: coinModel) <= 3 {
-                    coinModel.generateCollisionShapes(recursive: true)
-                }
-                
-            }
-        }
+        updateGameState(arView: arView)
         
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
         arView.addGestureRecognizer(tapGesture)
         
-
-        
         return arView
     }
     
+    func stopARSession(arView: ARView) {
+       let configuration = ARWorldTrackingConfiguration()
+       arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+       arView.session.pause()
+    }
+    
+    func updateGameState(arView: ARView) {
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+                self.checkDistance(arView: arView)
+                
+                if !isEverythingCollected {
+                    moveModelForward(ghostModel, arView: arView, distance: 0.075)
+                } else {
+                    moveModelForward(ghostModel, arView: arView, distance: 0.15)
+                }
+                
+                if distanceFromCamera(arView: arView, model: shrineModel) <= 3  && isEverythingCollected {
+                    shrineModel.generateCollisionShapes(recursive: true)
+                }
+                
+                enableTouch(arView: arView, model: origamiModel)
+                enableTouch(arView: arView, model: bellModel)
+                enableTouch(arView: arView, model: coinModel)
+                
+                if isEverythingCollected {
+                    hapticManager.startHaptic()
+                    
+                    if isWin || isGameOver {
+                        hapticManager.stopHaptic()
+                        stopARSession(arView: arView)
+                    }
+                }
+            }
+        }
+    }
+    
+    func enableTouch(arView: ARView, model: ModelEntity) {
+        if distanceFromCamera(arView: arView, model: model) <= 3 {
+            model.generateCollisionShapes(recursive: true)
+        }
+    }
     
     func randomPosition(a: Float, b: Float) -> SIMD3<Float> {
         let randomX = Float.random(in: a...b)
         let randomZ = Float.random(in: a...b)
         return SIMD3<Float>(randomX, 0, randomZ)
     }
-    
-    func isWithinRadius(_ position1: SIMD3<Float>, _ position2: SIMD3<Float>, radius: Float) -> Bool {
-        let distance = simd_distance(position1, position2)
-        return distance < radius
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(shrineModel: shrineModel, origamiModel: origamiModel, bellModel: bellModel, 
-                    coinModel: coinModel, isOrigamiCollected: $isOrigamiCollected, isBellCollected: $isBellCollected, isCoinCollected: $isCoinCollected, isEverythingCollected: $isEverythingCollected, isWin: $isWin)
-    }
-    
-    class Coordinator: NSObject {
-
-        var shrineModel: ModelEntity
-        var origamiModel: ModelEntity
-        var bellModel: ModelEntity
-        var coinModel: ModelEntity
-        @Binding var isOrigamiCollected: Bool
-        @Binding var isBellCollected: Bool
-        @Binding var isCoinCollected: Bool
-        @Binding var isEverythingCollected: Bool
-        @Binding var isWin: Bool
-                
-        
-        @Published var isListening: Bool = false
-        @State private var recognizedText = ""
-        private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
-        private var audioEngine = AVAudioEngine()
-        
-        init(shrineModel: ModelEntity, origamiModel: ModelEntity, bellModel: ModelEntity, coinModel: ModelEntity, isOrigamiCollected: Binding<Bool>, isBellCollected: Binding<Bool>, isCoinCollected: Binding<Bool>, isEverythingCollected: Binding<Bool>, isWin: Binding<Bool>) {
-                    self.shrineModel = shrineModel
-                    self.origamiModel = origamiModel
-                    self.bellModel = bellModel
-                    self.coinModel = coinModel
-                    _isOrigamiCollected = isOrigamiCollected
-                    _isBellCollected = isBellCollected
-                    _isCoinCollected = isCoinCollected
-                    _isEverythingCollected = isEverythingCollected
-                    _isWin = isWin
-                    super.init()
-                }
-        
-        @objc func handleTap(_ sender: UITapGestureRecognizer) {
-            guard let arView = sender.view as? ARView else {return}
-            let tapLocation = sender.location(in: arView)
-            
-            if let entity = arView.entity(at: tapLocation) {
-                    print("Tapped the model!")
-                
-                if entity == shrineModel {
-                    print("LALALALALLALALALALALALALALALALALLAALLALAALLALALALALALALALALALAALLAALALALALA")
-                    //speech recognition disini lalu kalau menang redirect ke winPage
-                    
-                    toggleListening()
-                }
-                
-                if entity == origamiModel {
-                    self.isOrigamiCollected = true
-                    audioPlayer.playNarration(fileName: "CollectItem")
-                    entity.removeFromParent()
-                    
-                    if (self.isBellCollected && self.isCoinCollected) {
-                        self.isEverythingCollected = true
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            audioPlayer.playNarration(fileName: "CollectedAll")
-                        }
-                    }
-                }
-                
-                if entity == bellModel {
-                    self.isBellCollected = true
-                    audioPlayer.playNarration(fileName: "CollectItem")
-                    entity.removeFromParent()
-                    
-                    if (self.isOrigamiCollected && self.isCoinCollected) {
-                        self.isEverythingCollected = true
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            audioPlayer.playNarration(fileName: "CollectedAll")
-                        }
-                    }
-                }
-                
-                if entity == coinModel {
-                    self.isCoinCollected = true
-                    audioPlayer.playNarration(fileName: "CollectItem")
-                    entity.removeFromParent()
-                    
-                    if (self.isBellCollected && self.isOrigamiCollected) {
-                        self.isEverythingCollected = true
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            audioPlayer.playNarration(fileName: "CollectedAll")
-                        }
-                    }
-                }
-                
-                
-            } else {
-                print("================================================= You tapped at nothing")
-            }
-        }
-        
-        func toggleListening() {
-            print(isListening)
-            if isListening {
-                stopListening()
-            } else {
-          
-                startListening()
-            }
-        }
-        
-        func stopListening() {
-            print("listening stopped")
-            audioEngine.stop()
-            audioEngine.inputNode.removeTap(onBus: 0)
-            isListening = false
-        }
-            
-        func startListening() {
-            print("start listening")
-            guard SFSpeechRecognizer.authorizationStatus() == .authorized else {
-                SFSpeechRecognizer.requestAuthorization { status in
-                    if status == .authorized {
-                        self.startListening()
-                    }
-                }
-                return
-            }
-    
-            try? AVAudioSession.sharedInstance().setCategory(.record)
-            try? AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-    
-            let recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-            let inputNode = audioEngine.inputNode
-            let recordingFormat = inputNode.outputFormat(forBus: 0)
-    
-            inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, _) in
-                recognitionRequest.append(buffer)
-            }
-    
-            speechRecognizer.recognitionTask(with: recognitionRequest) { (result, _) in
-                if let result = result {
-                    let bestString = result.bestTranscription.formattedString
-                    self.recognizedText = bestString
-                    if bestString.lowercased().contains("sorry") {
-                        // Detected the secret word "swift"
-                        print("Secret word spelled")
-                        self.isWin = true
-                    }
-                }
-            }
-    
-            audioEngine.prepare()
-            do {
-                try audioEngine.start()
-            } catch {
-                print("Error starting audio engine: \(error.localizedDescription)")
-            }
-    
-            isListening = true
-        }
-            
-    }
-    
-    
     
     func distanceFromCamera(arView: ARView, model: ModelEntity) -> Float {
         let modelPosition = model.transform.translation
@@ -353,9 +209,8 @@ struct ARViewContainer: UIViewRepresentable {
         return distanceFromCamera
     }
     
-    
     func checkDistance(arView: ARView) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { // ini bikin jeda anggepannya invincible selama 15 detik, kalau ga pake ini, default printedDistancenya pas baru mulai itu 0 atau kadang dibawah threshold karena loading kamera.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
             
             let cameraPosition = arView.cameraTransform.translation
             print("cameraPosition: \(cameraPosition)")
@@ -373,9 +228,9 @@ struct ARViewContainer: UIViewRepresentable {
             print("Coin Position: \(CoinModelPosition)")
             
             
-            let printedDistance = simd_distance(cameraPosition, ghostModelPosition)
+            let ghostDistance = simd_distance(cameraPosition, ghostModelPosition)
             
-            print("Distance between ghost and camera: \(printedDistance)")
+            print("Distance from ghost: \(ghostDistance)")
             
             let distanceFromShrine = simd_distance(cameraPosition, shrineModel.transform.translation)
             print("Distance from shrine: \(distanceFromShrine)")
@@ -389,49 +244,33 @@ struct ARViewContainer: UIViewRepresentable {
             let distanceFromCoin = simd_distance(cameraPosition, CoinModelPosition)
             print("Distance from Coin: \(distanceFromCoin)")
             
-            if isModelLoaded {
-                if printedDistance <= 1.0 { // If distance is less than or equal to 1
-                    isGameOver = true // Set game over
-                    //                    print("Udah game over")
+            if gameStatus.isModelLoaded {
+                if ghostDistance <= 1.0 {
+                    isGameOver = true
                 }
                 
                 if distanceFromShrine <= 3.5 {
-                    if !isShrineFound {
+                    if !gameStatus.isShrineFound {
                         audioPlayer.playNarration(fileName: "ShrineNear")
                     }
-                    isShrineFound = true
+                    gameStatus.isShrineFound = true
                 }
             }
             
         }
     }
     
-    
-    func moveModelForward(_ modelEntity: ModelEntity, arView: ARView) {
-        // Define the distance you want the model to move in the Z-axis
-        var distance: Float = 0.075
-        
-        if isEverythingCollected {
-            distance = 0.1
-        }
-        
+    func moveModelForward(_ modelEntity: ModelEntity, arView: ARView, distance: Float) {
         let cameraPosition = arView.cameraTransform.translation
         
-        // Get the current position of the model
         var currentPosition = modelEntity.transform.translation
         
-        // Calculate the new position by adding the forward vector multiplied by the distance
         currentPosition.z +=  distance
         
-        
-        // Update the total distance traveled
         totalDistanceTraveled += distance
         
-        // Check if the model has traveled more than 10 meter
-        if totalDistanceTraveled >= 10.0 {
-            
-            // Respawn the ghost at position (0, 0) with random X and Z positions relative to camera
-            
+        if totalDistanceTraveled >= 7.5 {
+                        
             let respawnRadius: Float = 5.0
             
             let randomXOffset = Float.random(in: -respawnRadius...respawnRadius)
@@ -443,21 +282,23 @@ struct ARViewContainer: UIViewRepresentable {
             currentPosition.x = randomX
             currentPosition.z = randomZ
             
-            // Reset the total distance traveled
             totalDistanceTraveled = 0.0
             
-            // Set the new position to the model's transform
             modelEntity.transform.translation = currentPosition
         }
         else {
-            // Update the model's position if it hasn't respawned
             modelEntity.transform.translation = currentPosition
         }
     }
     
+    func makeCoordinator() -> Coordinator {
+        Coordinator(shrineModel: shrineModel, origamiModel: origamiModel, bellModel: bellModel,
+                    coinModel: coinModel, isOrigamiCollected: $isOrigamiCollected, isBellCollected: $isBellCollected,
+                    isCoinCollected: $isCoinCollected, isEverythingCollected: $isEverythingCollected, isWin: $isWin)
+    }
     
     func updateUIView(_ uiView: ARView, context: Context) {
-        // Not required in this case, but can be used for updates
+        
     }
     
 }
