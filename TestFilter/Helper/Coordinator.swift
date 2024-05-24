@@ -1,10 +1,3 @@
-//
-//  Coordinator.swift
-//  TestFilter
-//
-//  Created by Alfred Jhonatan on 21/05/24.
-//
-
 import Foundation
 import RealityKit
 import ARKit
@@ -53,8 +46,6 @@ class Coordinator: NSObject {
             if entity == shrineModel {
                 toggleListening()
             }
-            
-            //dibikin function dengan parameter
             
             if entity == origamiModel {
                 self.isOrigamiCollected = true
@@ -155,7 +146,7 @@ class Coordinator: NSObject {
         do {
             try audioEngine.start()
         } catch {
-            print("Error starting audio engine: \(error.localizedDescription)")
+           
         }
 
         isListening = true

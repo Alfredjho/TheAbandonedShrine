@@ -39,7 +39,7 @@ struct MainMenuView: View {
     private func playBgMusicEvery20Seconds() {
             DispatchQueue.main.asyncAfter(deadline: .now() + 20) {
                 bgPlayer.playRandomBGM()
-                playBgMusicEvery20Seconds() // Schedule next play
+                playBgMusicEvery20Seconds()
             }
     }
 }

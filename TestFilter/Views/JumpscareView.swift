@@ -61,6 +61,3 @@ struct JumpscareView: View {
     
 }
 
-//#Preview {
-//    JumpscareView()
-//}

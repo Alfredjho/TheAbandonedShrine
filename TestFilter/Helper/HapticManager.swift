@@ -12,19 +12,19 @@ class HapticManager {
         do {
             hapticEngine = try CHHapticEngine()
             hapticEngine?.stoppedHandler = { reason in
-                print("Haptic engine stopped for reason: \(reason)")
+               
             }
             hapticEngine?.resetHandler = {
-                print("Haptic engine reset")
+               
                 do {
                     try self.hapticEngine?.start()
                 } catch {
-                    print("Failed to restart the haptic engine: \(error)")
+                   
                 }
             }
             try hapticEngine?.start()
         } catch {
-            print("Haptic engine Creation Error: \(error)")
+           
         }
     }
     
@@ -42,7 +42,7 @@ class HapticManager {
             hapticPlayer = try hapticEngine.makePlayer(with: continuousHapticPattern!)
             try hapticPlayer?.start(atTime: 0)
         } catch {
-            print("Failed to start continuous haptic: \(error)")
+            
         }
     }
     
@@ -50,7 +50,7 @@ class HapticManager {
         do {
             try hapticPlayer?.stop(atTime: 0)
         } catch {
-            print("Failed to stop haptic: \(error)")
+            
         }
     }
 }

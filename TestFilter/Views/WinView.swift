@@ -55,7 +55,4 @@ struct WinView: View {
         }
     }
 }
-//
-//#Preview {
-//    WinView()
-//}
+

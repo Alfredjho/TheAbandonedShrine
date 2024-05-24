@@ -83,7 +83,7 @@ struct ARViewContainer: UIViewRepresentable {
         bellModel.transform.translation = bellPosition
         
         coinModel.transform.scale = SIMD3<Float>(0.005,0.005,0.005)
-        let coinPosition = randomPosition(a: -7, b: -3)
+        let coinPosition = randomPosition(a: -3, b: 3)
         coinModel.transform.translation = coinPosition
     }
     

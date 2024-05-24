@@ -12,7 +12,6 @@
 		BB1C6FED2BF48287003E5CE6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB1C6FEC2BF48287003E5CE6 /* Preview Assets.xcassets */; };
 		BB1C6FF42BF48467003E5CE6 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C6FF32BF48467003E5CE6 /* MainView.swift */; };
 		BB1C6FF62BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BB1C6FF52BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz */; };
-		BB1C6FF82BF4921A003E5CE6 /* ExARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C6FF72BF4921A003E5CE6 /* ExARView.swift */; };
 		BB1C70362BF4FD36003E5CE6 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C70352BF4FD36003E5CE6 /* AudioManager.swift */; };
 		BB1C70382BF4FD67003E5CE6 /* HorrorBGM.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BB1C70372BF4FD67003E5CE6 /* HorrorBGM.mp4 */; };
 		BB1C703A2BF5B520003E5CE6 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C70392BF5B520003E5CE6 /* MainMenuView.swift */; };
@@ -46,7 +45,6 @@
 		BB1C6FEC2BF48287003E5CE6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BB1C6FF32BF48467003E5CE6 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BB1C6FF52BF4894E003E5CE6 /* Mieruko-chan_shrine_Ghost.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "Mieruko-chan_shrine_Ghost.usdz"; sourceTree = "<group>"; };
-		BB1C6FF72BF4921A003E5CE6 /* ExARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExARView.swift; sourceTree = "<group>"; };
 		BB1C70352BF4FD36003E5CE6 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		BB1C70372BF4FD67003E5CE6 /* HorrorBGM.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = HorrorBGM.mp4; sourceTree = "<group>"; };
 		BB1C70392BF5B520003E5CE6 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
@@ -162,7 +160,6 @@
 		BB1C70822BF8B408003E5CE6 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				BB1C6FF72BF4921A003E5CE6 /* ExARView.swift */,
 				BB1C70352BF4FD36003E5CE6 /* AudioManager.swift */,
 				BBC77AFD2BFCE018002EB744 /* Coordinator.swift */,
 				BBC77B012BFDCC9D002EB744 /* HapticManager.swift */,
@@ -261,7 +258,6 @@
 				BB1C703A2BF5B520003E5CE6 /* MainMenuView.swift in Sources */,
 				BB1C70912BFC6772003E5CE6 /* WinView.swift in Sources */,
 				BB1C707B2BF791FA003E5CE6 /* JumpscareView.swift in Sources */,
-				BB1C6FF82BF4921A003E5CE6 /* ExARView.swift in Sources */,
 				BB1C6FF42BF48467003E5CE6 /* MainView.swift in Sources */,
 				BB1C70362BF4FD36003E5CE6 /* AudioManager.swift in Sources */,
 				BBC77B022BFDCC9D002EB744 /* HapticManager.swift in Sources */,

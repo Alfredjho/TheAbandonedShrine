@@ -83,6 +83,11 @@ struct MainView: View {
         } else if isWin {
             isWin = false
         }
+        
+        isOrigamiCollected = false
+        isBellCollected = false
+        isCoinCollected = false
+        isEverythingCollected = false
     }
 }
 
