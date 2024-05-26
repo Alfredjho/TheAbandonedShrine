@@ -83,7 +83,7 @@ struct ARViewContainer: UIViewRepresentable {
         bellModel.transform.translation = bellPosition
         
         coinModel.transform.scale = SIMD3<Float>(0.005,0.005,0.005)
-        let coinPosition = randomPosition(a: -3, b: 3)
+        let coinPosition = randomPosition(a: -10, b: 10)
         coinModel.transform.translation = coinPosition
     }
     
@@ -213,36 +213,11 @@ struct ARViewContainer: UIViewRepresentable {
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
             
             let cameraPosition = arView.cameraTransform.translation
-            print("cameraPosition: \(cameraPosition)")
-            
             let ghostModelPosition = ghostModel.transform.translation
-            print("ghostPosition: \(ghostModelPosition)")
-            
-            let origamiModelPosition = origamiModel.transform.translation
-            print("Origami Position: \(origamiModelPosition)")
-            
-            let BellModelPosition = bellModel.transform.translation
-            print("Bell Position: \(BellModelPosition)")
-            
-            let CoinModelPosition = coinModel.transform.translation
-            print("Coin Position: \(CoinModelPosition)")
-            
+            let shrineModelPosition = shrineModel.transform.translation
             
             let ghostDistance = simd_distance(cameraPosition, ghostModelPosition)
-            
-            print("Distance from ghost: \(ghostDistance)")
-            
-            let distanceFromShrine = simd_distance(cameraPosition, shrineModel.transform.translation)
-            print("Distance from shrine: \(distanceFromShrine)")
-            
-            let distanceFromOrigami = simd_distance(cameraPosition, origamiModelPosition)
-            print("Distance from Origami: \(distanceFromOrigami)")
-            
-            let distanceFromBell = simd_distance(cameraPosition, BellModelPosition)
-            print("Distance from Bell: \(distanceFromBell)")
-            
-            let distanceFromCoin = simd_distance(cameraPosition, CoinModelPosition)
-            print("Distance from Coin: \(distanceFromCoin)")
+            let distanceFromShrine = simd_distance(cameraPosition, shrineModelPosition)
             
             if gameStatus.isModelLoaded {
                 if ghostDistance <= 1.0 {

@@ -47,52 +47,53 @@ class Coordinator: NSObject {
                 toggleListening()
             }
             
-            if entity == origamiModel {
-                self.isOrigamiCollected = true
-                audioPlayer.playNarration(fileName: "CollectItem")
-                entity.removeFromParent()
-                
-                if (self.isBellCollected && self.isCoinCollected) {
-                    self.isEverythingCollected = true
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        self.audioPlayer.playNarration(fileName: "CollectedAll")
-                    }
-                }
-            }
-            
-            if entity == bellModel {
-                self.isBellCollected = true
-                audioPlayer.playNarration(fileName: "CollectItem")
-                entity.removeFromParent()
-                
-                if (self.isOrigamiCollected && self.isCoinCollected) {
-                    self.isEverythingCollected = true
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        self.audioPlayer.playNarration(fileName: "CollectedAll")
-                    }
-                }
-            }
-            
-            if entity == coinModel {
-                self.isCoinCollected = true
-                audioPlayer.playNarration(fileName: "CollectItem")
-                entity.removeFromParent()
-                
-                if (self.isBellCollected && self.isOrigamiCollected) {
-                    self.isEverythingCollected = true
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        self.audioPlayer.playNarration(fileName: "CollectedAll")
-                    }
-                }
-            }
-            
+            tapModel(model: entity)
             
         } else {
             
         }
+    }
+    
+    func tapModel(model: Entity) {
+        if (model == origamiModel) {
+            self.isOrigamiCollected = true
+            
+            if (self.isBellCollected && self.isCoinCollected) {
+                self.isEverythingCollected = true
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    self.audioPlayer.playNarration(fileName: "CollectedAll")
+                }
+            }
+            
+        }
+        
+        else if (model == bellModel) {
+            self.isBellCollected = true
+            
+            if (self.isOrigamiCollected && self.isCoinCollected) {
+                self.isEverythingCollected = true
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    self.audioPlayer.playNarration(fileName: "CollectedAll")
+                }
+            }
+        }
+        
+        else if (model == coinModel) {
+            self.isCoinCollected = true
+            
+            if (self.isBellCollected && self.isOrigamiCollected) {
+                self.isEverythingCollected = true
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    self.audioPlayer.playNarration(fileName: "CollectedAll")
+                }
+            }
+        }
+        
+        audioPlayer.playNarration(fileName: "CollectItem")
+        model.removeFromParent()
     }
     
     func toggleListening() {
